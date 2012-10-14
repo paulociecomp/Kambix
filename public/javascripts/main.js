@@ -11,13 +11,27 @@ function sendAction(a, d)
 }
 
 socket.on("connect", function(){
-	
-});
+	console.log("conectou");
+
+	project.id = $("#project-id").val();
+	sendAction("init", project);
+})
 
 socket.on('message', function(message){
 	switch(message.action){
 		case "moveCard":
 			moveCard($("#" + message.data.story.id), message.data.story.position);
+		break;
+
+		case "init":
+			if(!message.data)
+				return ;
+
+			for(var i in message.data.stories){
+				console.log(message.data.stories[i]._id);
+				moveCard($("#" + message.data.stories[i]._id), message.data.stories[i].position);
+				
+			}
 		break;
 	}
 });

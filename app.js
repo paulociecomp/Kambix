@@ -56,6 +56,7 @@ io.configure(function () {
 }); 
 
 io.sockets.on("connection", function(client){
+
   client.on('message', function (message) {
     switch(message.action){
       case 'moveCard':
@@ -94,6 +95,19 @@ io.sockets.on("connection", function(client){
         });
       })
 
+      break;
+
+      case "init":
+        console.log(message);
+        Project.findById(message.data.id, function(err, project){
+          
+          message = {
+            action : "init",
+            data : project
+          }
+
+          io.sockets.json.send(message);
+        });
       break;
     }
   });

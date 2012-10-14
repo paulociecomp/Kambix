@@ -1,0 +1,7 @@
+
+.story-backlog{
+	padding: 10px;
+	border: 1px solid gray;
+	height: 100px;
+	background: url("../images/white-card.png")
+}

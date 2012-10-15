@@ -15,9 +15,10 @@ socket.on("connect", function(){
 
 	project.id = $("#project-id").val();
 	sendAction("init", project);
-})
+});
 
 socket.on('message', function(message){
+	console.log(message);
 	switch(message.action){
 		case "moveCard":
 			moveCard($("#" + message.data.story.id), message.data.story.position);
@@ -33,9 +34,25 @@ socket.on('message', function(message){
 				
 			}
 		break;
+
+		case "createCard":
+			
+	 		$("#storys-list").prepend("<div class='story-backlog'>" + message.data.story.description + "</div>");
+	 		$("#desc-story").val("");
+	 		$(".story-backlog").draggable();
+
+	 		$(".story-backlog").on("dragstop", function(event, ui) {
+				story.id = this.id;
+				story.position = ui.position;
+
+				project.id = $("#project-id").val();
+				project.story = story;
+
+				sendAction("moveCard", project);
+			});
+		break;
 	}
 });
-
 
 $(function(){
 	$("#show-cad-story").click(function(){
@@ -70,18 +87,21 @@ var createStory = function(){
 	story.position = { four: 5 };
 	project.story = story;
 
-	$.ajax({
-		url : "/projects/update",
-		data : { project : project },
-		type : "PUT",
-		dataType : "json",
-		success : function(res){
-			if(!res.success){ alert("Uma falha ocorreu!"); return }
+	sendAction("createCard", project);
+
+	// $.ajax({
+	// 	url : "/projects/update",
+	// 	data : { project : project },
+	// 	type : "PUT",
+	// 	dataType : "json",
+	// 	success : function(res){
+	// 		if(!res.success){ alert("Uma falha ocorreu!"); return }
 			
-			$("#storys-list").prepend("<div class='story-backlog'>" + $("#desc-story").val() + "</div>");
-			$("#desc-story").val("");
-		}
-	});
+	// 		$("#storys-list").prepend("<div class='story-backlog'>" + $("#desc-story").val() + "</div>");
+	// 		$("#desc-story").val("");
+	// 		$(".story-backlog").draggable();
+	// 	}
+	// });
 }
 
 function moveCard(card, position) {

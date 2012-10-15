@@ -1,7 +1,18 @@
 
 .story-backlog{
 	padding: 10px;
-	border: 1px solid gray;
 	height: 100px;
 	background: url("../images/white-card.png")
+}
+
+.card-content{
+	padding: 5px;
+	width: 150px;
+	margin: 12px 0 0 25px;
+	font-size: 11px;
+	line-height: 14px;
+}
+
+.span3{
+	border-right: 1px solid gray;
 }

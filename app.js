@@ -77,28 +77,12 @@ io.sockets.on("connection", function(client){
 
                 io.sockets.json.send(message);
             });
-              return;
           }
-
-          story = new Story(message.data.story);
-          story.position = message.data.story.position;
-          
-          project.stories.push(story);
-
-          project.save(function(err) {
-            if(err){ 
-              console.log(err) 
-              return false;
-            };
-
-              io.sockets.json.send(message);
         });
-      })
 
       break;
 
       case "init":
-        console.log(message);
         Project.findById(message.data.id, function(err, project){
           
           message = {
@@ -108,6 +92,24 @@ io.sockets.on("connection", function(client){
 
           io.sockets.json.send(message);
         });
+      break;
+
+      case "createCard":
+        Project.findById(message.data.id, function(err, project){
+
+          story = new Story(message.data.story);
+          
+          project.stories.push(story);
+
+          project.save(function(err) {
+            if(err){ 
+              console.log(err) 
+              return false;
+            };
+
+            io.sockets.json.send(message);
+          });
+        })
       break;
     }
   });

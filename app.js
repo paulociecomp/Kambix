@@ -50,7 +50,6 @@ io.configure(function () {
       'websocket'
     , 'flashsocket'
     , 'htmlfile'
-//    , 'xhr-polling'
     , 'jsonp-polling'
   ]);
 }); 
@@ -60,6 +59,7 @@ io.sockets.on("connection", function(client){
   client.on('message', function (message) {
     switch(message.action){
       case 'moveCard':
+      console.log("moveu no servidor");
         Project.findById(message.data.id, function(err, project){
 
           if(message.data.story.id){
@@ -84,7 +84,6 @@ io.sockets.on("connection", function(client){
 
       case "init":
         Project.findById(message.data.id, function(err, project){
-          
           message = {
             action : "init",
             data : project
@@ -96,7 +95,6 @@ io.sockets.on("connection", function(client){
 
       case "createCard":
         Project.findById(message.data.id, function(err, project){
-
           story = new Story(message.data.story);
           
           project.stories.push(story);
@@ -107,10 +105,37 @@ io.sockets.on("connection", function(client){
               return false;
             };
 
+            project.stories.forEach(function(story) {
+              if(story.description === message.data.story.description){          
+                message.data.story.id =  story.id;
+              }
+                console.log(message.data);
+            });
+
             io.sockets.json.send(message);
           });
         })
       break;
+
+    case "editCard" :
+      Project.findById(message.data.id, function(err, project){
+        project.stories.id(message.data.story.id).description = message.data.story.description;
+        project.save();
+
+        io.sockets.json.send(message);
+      });
+    break;
+
+    case "removeCard" :
+      Project.findById(message.data.id, function(err, project){
+        project.stories.id(message.data.story.id).remove();
+        
+        project.save(function(err){
+          if (err) return handleError(err);
+          io.sockets.json.send(message);
+        });
+      });
+    break;
     }
   });
 });

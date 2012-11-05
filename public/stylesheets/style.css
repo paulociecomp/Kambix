@@ -1,8 +1,18 @@
+body{
+	
+}
 
 .story-backlog{
 	padding: 10px;
+	width: 200px;
 	height: 100px;
-	background: url("../images/white-card.png")
+	background: url("../images/white-card.png") no-repeat;
+	overflow: hidden;
+	position: absolute;
+	z-index: 10;
+	top: 10px;
+	left: 0px;
+	display: block;
 }
 
 .card-content{
@@ -11,8 +21,38 @@
 	margin: 12px 0 0 25px;
 	font-size: 11px;
 	line-height: 14px;
+	height: 80px;
+	overflow: hidden;
+	display: block;
+	xline-height: 16px;
+	xopacity: .8;
 }
 
-.span3{
+.botao-remove{
+	float: right;
+}
+
+#board{
+	width: 1280px;
+	max-height: 900px;
+	border: 10px solid;
+	margin-top: 50px;
+	overflow: hidden;
+}
+
+#board .collum h2{
+	text-align: center;
+}
+
+.collum{
 	border-right: 1px solid gray;
+	min-height: 900px;
+	width: 200px;
+	float: left;
+}
+
+textarea{
+	border: none;
+	background-color:inherit;
+	overflow: hidden;
 }

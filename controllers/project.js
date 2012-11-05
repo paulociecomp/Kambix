@@ -26,6 +26,11 @@ module.exports = function(app){
 		});
 	});
 
+	app.post("/card/update", function(req, res){
+		// console.log(req.body);
+		res.send(req.body.value);
+	});
+
 	app.put("/projects/update", function(req, res){
 		Project.findById(req.body.project.id, function(err, project){
 

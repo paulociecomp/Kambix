@@ -1,4 +1,4 @@
 kambix
 ======
 
-tasks management in  node.js and mondb
+tasks management in  node.js and mongodb

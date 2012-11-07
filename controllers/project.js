@@ -31,6 +31,11 @@ module.exports = function(app){
 		res.send(req.body.value);
 	});
 
+	app.post("/collum/", function(req, res){
+		// console.log(req.body);
+		res.send(req.body.value);
+	});
+
 	app.put("/projects/update", function(req, res){
 		Project.findById(req.body.project.id, function(err, project){
 

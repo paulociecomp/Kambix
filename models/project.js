@@ -7,7 +7,8 @@ var Story = new mongoose.Schema({
 
 var Project = new mongoose.Schema({
 	name : String,
-	stories : [Story]
+	stories : [Story],
+	columns : []
 })
 
 mongoose.model("Project", Project);

@@ -131,6 +131,35 @@ io.sockets.on("connection", function(client){
         project.stories.id(message.data.story.id).remove();
         
         project.save(function(err){
+          // if (err) return handleError(err);
+          io.sockets.json.send(message);
+        });
+      });
+    break;
+
+    case "updateColumn" :
+
+      Project.findById(message.data.id, function(err, project){
+
+        project.columns = message.data.columns;
+
+        project.save(function(err){
+          if(err){ 
+            console.log(err) 
+            return false;
+          };
+
+          io.sockets.json.send(message);
+        });
+      });
+    break;
+
+    case "removeColumn" :
+    console.log("#########");
+      Project.findById(message.data.id, function(err, project){
+        project.columns = message.data.columns;
+        
+        project.save(function(err){
           if (err) return handleError(err);
           io.sockets.json.send(message);
         });

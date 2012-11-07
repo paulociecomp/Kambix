@@ -1,41 +1,21 @@
 <div class="row">
 	<input type="hidden" id="project-id" value="<%= project.id %>" />
 	<input type="hidden" id="project-name" value="<%= project.name %>" />
-	<div class="navbar-inner">
-				Backlog
-		<button id="add-story" class="btn"><i class="icon-plus"></i></button>
-	</div>
+	<button id="add-story" class="btn btn-info"><i class="icon-plus"></i>add card</button>
+	<button id="add-collum" class="btn btn-success"><i class="icon-plus"></i>add collum</button>
+	<button id="remove-collum" class="btn btn-danger"><i class="icon-remove"></i>remove collum</button>
+	<h1><%= project.name %></h1>
 	<div id="board">
-		<div class="collum">
-			
-
-			<div id="storys-list">
-				<% project.stories.forEach(function(story) { %>
-					<div id="<%= story.id %>" class="story-backlog" style="top: <%= story.position.top %>; left: <%= story.position.left %>">
-						<a href="#" class="botao-remove"><i class="icon-remove"></i></a>
-						<div class="card-content"><%= story.description %></div>
-					</div>
-				<% }) %>
-			</div>
+		<div id="storys-list">
+			<% project.stories.forEach(function(story) { %>
+				<div id="<%= story.id %>" class="story-backlog" style="top: <%= story.position.top %>; left: <%= story.position.left %>">
+					<a href="#" class="botao-remove"><i class="icon-remove"></i></a>
+					<div class="card-content"><%= story.description %></div>
+				</div>
+			<% }) %>
 		</div>
-		<div class="collum">
-			<h2>Novo</h2>
-		</div>
-		<div class="collum">
+		
 
-		</div>
-		<div class="collum">
-
-		</div>
-		<div class="collum">
-
-		</div>
-<div class="collum">
-
-		</div><div class="collum">
-
-		</div>
-	
 	</div>
 	
 </div>

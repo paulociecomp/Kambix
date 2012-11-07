@@ -33,11 +33,12 @@ body{
 }
 
 #board{
-	width: 1280px;
+	width: 800px;
 	max-height: 900px;
 	border: 10px solid;
 	margin-top: 50px;
 	overflow: hidden;
+	min-height: 900px;
 }
 
 #board .collum h2{
@@ -49,6 +50,13 @@ body{
 	min-height: 900px;
 	width: 200px;
 	float: left;
+}
+
+.t-collum textarea{
+	background-color:inherit;
+	overflow: hidden;
+	margin: auto;
+	width: 150px;
 }
 
 textarea{

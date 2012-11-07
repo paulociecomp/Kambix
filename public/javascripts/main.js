@@ -20,16 +20,10 @@ socket.on('message', function(message){
 
 			initCards();
 
+			initColumns(message.data);
+
 			for(var i in message.data.stories){
-				$('#' + message.data.stories[i]._id + ' .card-content').editable('/card/update', {
-					submitdata : {project_id : message.data._id, story_id : message.data.stories[i]._id},
-			        type      : 'textarea',
-			        tooltip   : 'Click to edit...',
-			        placeholder   : 'Double Click to Edit.',
-			        event: 'dblclick',
-			        onblur: 'submit',
-			        callback : onCardChange
-		     	});
+				activeEditable(message.data.stories[i]._id);
 
 				moveCard($("#" + message.data.stories[i]._id), message.data.stories[i].position);
 			}
@@ -43,17 +37,9 @@ socket.on('message', function(message){
 	 				"<div class='card-content'>" + message.data.story.description + "</div></div>");
 	 		$("#desc-story").val("");
 
-	 		$('#' + message.data.story.id + ' .card-content').editable('/card/update', {
-				submitdata : {project_id : message.data.id, story_id : message.data.story.id},
-		        type      : 'textarea',
-		        tooltip   : 'Click to edit...',
-		        placeholder   : 'Double Click to Edit.',
-		        event: 'dblclick',
-		        onblur: 'submit',
-		        callback : onCardChange
-	     	});
-	 		
 	 		initCards();
+
+	 		activeEditable(message.data.story.id);
 		break;
 
 		case "editCard":
@@ -61,12 +47,15 @@ socket.on('message', function(message){
 		break;
 
 		case "removeCard" :
-			$("#" + message.data.story.id).remove();
+			// $("#" + message.data.story.id).remove();
 		break;
 	}
 });
 
 $(function(){
+	collums_width = 0;
+	project.id = $("#project-id").val();
+
 	$("#show-cad-story").click(function(){
 		$("#cont-cad-story").slideDown();
 	});
@@ -75,6 +64,58 @@ $(function(){
 		createStory();
 	});
 
+	$("#add-collum").click(function(){
+		console.log(collums_width);
+		if(collums_width >= 1400) return;
+
+		$("#board").append('<div class="collum"><h2 class="t-collum">new</h2></div>');
+
+		collums_width = $(".collum").width() + collums_width;
+		
+		if(collums_width >= $("#board").width()) $("#board").width(collums_width +10);
+
+		$('.t-collum').editable( "/collum/",
+			{
+				style   : 'inherit',
+				type      : 'textarea',
+				placeholder   : 'New',
+				onblur: 'submit',
+				width: '',
+				height: '',
+				event: 'dblclick'
+			}
+		);
+
+		columns.push("New");
+		project.columns = columns;
+
+		sendAction("updateColumn", project);
+
+	});
+
+	$("#remove-collum").click(function(){
+		console.log(collums_width);
+		if(collums_width === 0) return;
+
+		$("#board .collum:last").remove();
+		columns.pop();
+
+		collums_width = collums_width - 200;	
+
+		if(collums_width <= 800){
+			$("#board").width(810);
+		}
+		else{
+			$("#board").width(collums_width + 10);
+		}
+
+		project.columns = columns;
+
+		sendAction("removeColumn", project);
+		
+	});
+
+	
 	
 });
 
@@ -82,8 +123,66 @@ var project = {};
 
 var story = {};
 
+var columns = [];
+
+function initColumns(project){
+	columns = project.columns;
+
+	for(var i in project.columns){
+		$("#board").append('<div class="collum"><h2 class="t-collum">'+ project.columns[i] +'</h2></div>');
+	}
+
+	$(".t-collum").each(function(){
+		// $("#board").width($("#board").width() + $(this).width());
+		collums_width = collums_width + $(this).width();
+	});
+
+	if(collums_width <= 800){
+		$("#board").width(810);
+	}
+	else{
+		$("#board").width(collums_width + 10);
+	}
+
+	$('.t-collum').editable( "/collum/",
+		{
+			style   : 'inherit',
+			type      : 'textarea',
+			placeholder   : 'New',
+			onblur: 'submit',
+			width: '',
+			height: '',
+			event: 'dblclick',
+			callback : editColumn
+		}
+	);
+	
+}
+
+function editColumn(text, result){
+	var names = [];
+	$('.t-collum').each(function() {
+		names.push($(this).text());
+	});
+	project.columns = names;
+
+	sendAction("updateColumn", project);
+}
+
+function activeEditable(story_id){
+	$('#' + story_id + ' .card-content').editable('/card/update', {
+		submitdata : {project_id : project.id, story_id : story_id},
+        type      : 'textarea',
+        tooltip   : 'Click to edit...',
+        placeholder   : 'Double Click to Edit.',
+        event: 'dblclick',
+        onblur: 'submit',
+        callback : onCardChange
+ 	});
+}
+
 function initCards(){
-	project.id = $("#project-id").val();
+	
 	$(".story-backlog").draggable();
 
 	$(".story-backlog").on("dragstop", function(event, ui) {
@@ -99,6 +198,8 @@ function initCards(){
 		e.preventDefault();
 		story.id = $(this).parent().attr("id");
 		project.story = story;
+
+		$(this).parent().remove();
 
 		sendAction("removeCard", project);
 	});

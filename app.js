@@ -59,7 +59,6 @@ io.sockets.on("connection", function(client){
   client.on('message', function (message) {
     switch(message.action){
       case 'moveCard':
-      console.log("moveu no servidor");
         Project.findById(message.data.id, function(err, project){
 
           if(message.data.story.id){
@@ -109,7 +108,6 @@ io.sockets.on("connection", function(client){
               if(story.description === message.data.story.description){          
                 message.data.story.id =  story.id;
               }
-                console.log(message.data);
             });
 
             io.sockets.json.send(message);
@@ -155,9 +153,8 @@ io.sockets.on("connection", function(client){
     break;
 
     case "removeColumn" :
-    console.log("#########");
       Project.findById(message.data.id, function(err, project){
-        project.columns = message.data.columns;
+        project.columns.pop();
         
         project.save(function(err){
           if (err) return handleError(err);

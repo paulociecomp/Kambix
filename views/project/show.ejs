@@ -5,8 +5,7 @@
 	<button id="add-collum" class="btn btn-success"><i class="icon-plus"></i>add collum</button>
 	<button id="remove-collum" class="btn btn-danger"><i class="icon-remove"></i>remove collum</button>
 	<h1><%= project.name %></h1>
-	<div id="board">
-		<div id="storys-list">
+	<div id="storys-list">
 			<% project.stories.forEach(function(story) { %>
 				<div id="<%= story.id %>" class="story-backlog" style="top: <%= story.position.top %>; left: <%= story.position.left %>">
 					<a href="#" class="botao-remove"><i class="icon-remove"></i></a>
@@ -14,6 +13,8 @@
 				</div>
 			<% }) %>
 		</div>
+	<div id="board">
+		
 		
 
 	</div>

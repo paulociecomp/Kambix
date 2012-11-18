@@ -19,7 +19,6 @@ socket.on('message', function(message){
 				return ;
 
 			initCards();
-
 			initColumns(message.data);
 
 			for(var i in message.data.stories){
@@ -47,8 +46,26 @@ socket.on('message', function(message){
 		break;
 
 		case "removeCard" :
-			// $("#" + message.data.story.id).remove();
+			$("#" + message.data.story.id).remove();
 		break;
+
+		case "updateColumn" :
+			initColumns(message.data);
+		break;
+
+		case "removeColumn" :
+			$("#board .collum:last").remove();
+			columns.pop();
+
+			collums_width = collums_width - 200;	
+
+			if(collums_width <= 800){
+				$("#board").width(810);
+			}
+			else{
+				$("#board").width(collums_width + 10);
+			}
+			break;
 	}
 });
 
@@ -65,14 +82,8 @@ $(function(){
 	});
 
 	$("#add-collum").click(function(){
-		console.log(collums_width);
+
 		if(collums_width >= 1400) return;
-
-		$("#board").append('<div class="collum"><h2 class="t-collum">new</h2></div>');
-
-		collums_width = $(".collum").width() + collums_width;
-		
-		if(collums_width >= $("#board").width()) $("#board").width(collums_width +10);
 
 		$('.t-collum').editable( "/collum/",
 			{
@@ -86,7 +97,7 @@ $(function(){
 			}
 		);
 
-		columns.push("New");
+		columns.push("new");
 		project.columns = columns;
 
 		sendAction("updateColumn", project);
@@ -94,20 +105,10 @@ $(function(){
 	});
 
 	$("#remove-collum").click(function(){
-		console.log(collums_width);
+
 		if(collums_width === 0) return;
 
-		$("#board .collum:last").remove();
-		columns.pop();
-
-		collums_width = collums_width - 200;	
-
-		if(collums_width <= 800){
-			$("#board").width(810);
-		}
-		else{
-			$("#board").width(collums_width + 10);
-		}
+		$("#board .collum:last").hide();
 
 		project.columns = columns;
 
@@ -128,7 +129,11 @@ var columns = [];
 function initColumns(project){
 	columns = project.columns;
 
-	for(var i in project.columns){
+	collums_width = 0;
+
+	$(".collum").remove();
+
+	for (var i in columns){
 		$("#board").append('<div class="collum"><h2 class="t-collum">'+ project.columns[i] +'</h2></div>');
 	}
 
@@ -199,7 +204,7 @@ function initCards(){
 		story.id = $(this).parent().attr("id");
 		project.story = story;
 
-		$(this).parent().remove();
+		$(this).parent().hide();
 
 		sendAction("removeCard", project);
 	});
